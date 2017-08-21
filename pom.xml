@@ -1,0 +1,170 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.lele</groupId>
+  <artifactId>dd</artifactId>
+  <packaging>war</packaging>
+  <version>1.0-SNAPSHOT</version>
+  <name>dd Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+
+
+  <!-- 各种版本号 -->
+  <properties>
+    <java-version>1.7</java-version>
+    <mysql.version>5.1.43</mysql.version>
+    <junit.version>4.12</junit.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <!-- 单元测试 -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- mysql JDBC  -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>${mysql.version}</version>
+    </dependency>
+
+    <!-- lombok 1.16.18 -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.16.18</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- servlet 3.1 -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- jsp-api -->
+    <dependency>
+      <groupId>javax.servlet.jsp</groupId>
+      <artifactId>jsp-api</artifactId>
+      <version>2.2</version>
+      <scope>provided</scope>
+    </dependency>
+
+    <!-- JSTL -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>jstl</artifactId>
+      <version>1.2</version>
+    </dependency>
+
+
+    <!-- fastjson -->
+    <dependency>
+      <groupId>com.alibaba</groupId>
+      <artifactId>fastjson</artifactId>
+      <version>1.2.36</version>
+    </dependency>
+
+    <!-- dbutil 手动导入 -->
+    <dependency>
+      <groupId>dbutil</groupId>
+      <artifactId>dbutil</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+  </dependencies>
+  <build>
+
+    <!-- 项目名称 -->
+    <finalName>${project.artifactId}</finalName>
+    <!-- 默认的主代码目录 -->
+    <sourceDirectory>src/main/java</sourceDirectory>
+    <!-- 默认的测试代码目录 -->
+    <testSourceDirectory>src/test/java</testSourceDirectory>
+    <!-- 处理无法加载资源配置文件 -->
+    <resources>
+      <resource>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>src/main/resources</directory>
+        <includes>
+          <include>**/*.xml</include>
+          <include>**/*.properties</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <plugins>
+      <!-- web项目打war文件配置 先complie 再打war-->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <warName>${project.artifactId}</warName>
+
+          <webResources>
+            <resource>
+              <directory>src/main/resources</directory>
+              <targetPath>WEB-INF/classes</targetPath>
+              <includes>
+                <include>**/*.*</include>
+              </includes>
+            </resource>
+          </webResources>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <source>${java-version}</source>
+          <target>${java-version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- tomcat plugin -->
+      <plugin>
+        <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+        <version>2.2</version>
+        <configuration>
+          <url>http://localhost:8088/manager/text</url> <!-- tomcat管理路径 -->
+          <server>tomcat7</server> <!-- 与settings.xml文件中Server的id相同 -->
+          <uriEncoding>utf-8</uriEncoding>
+          <port>8088</port><!--服务器端口号80可以省去-->
+          <path>/</path> <!-- 应用的部署位置 -->
+          <contextReloadable>true</contextReloadable>
+          <systemProperties>
+            <java.util.logging.SimpleFormatter.format>[%4$s] %1$tF %1$tT %3$s %5$s %n</java.util.logging.SimpleFormatter.format>
+          </systemProperties>
+        </configuration>
+        <executions>
+          <execution>
+            <id>tomcat-run</id>
+            <phase>test</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+  </build>
+</project>
